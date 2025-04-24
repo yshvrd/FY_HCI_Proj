@@ -28,18 +28,21 @@ recognition.addEventListener('result', (event) => {
     const target = speech.replace('open ', '').trim();
     let url = '';
 
-    // if target sounds like a website, format as full URL
+    // if target is a domain, treat it as URL
     if (target.includes('.') || target.includes('www')) {
       url = target.startsWith('http') ? target : `https://${target}`;
     } else {
-      // try searching on Google if it's not a domain
+      // not a direct domain — search it
       url = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
     }
 
     reply = `Opening ${target}`;
     window.open(url, '_blank');
   } else {
-    reply = "Sorry, I didn't understand that command.";
+    // default fallback: search the spoken phrase
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(speech)}`;
+    reply = `Searching for "${speech}"`;
+    window.open(searchUrl, '_blank');
   }
 
   responseEl.textContent = reply;
