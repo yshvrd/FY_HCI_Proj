@@ -27,13 +27,15 @@ recognition.addEventListener('result', (event) => {
   } else if (speech.startsWith('open ')) {
     const target = speech.replace('open ', '').trim();
     let url = '';
-    // if it's already a URL
-    if (! target.includes('.')) {
+
+    // if target sounds like a website, format as full URL
+    if (target.includes('.') || target.includes('www')) {
       url = target.startsWith('http') ? target : `https://${target}`;
     } else {
-      // assume domain name
-      url = {target};
+      // try searching on Google if it's not a domain
+      url = `https://www.google.com/search?q=${encodeURIComponent(target)}`;
     }
+
     reply = `Opening ${target}`;
     window.open(url, '_blank');
   } else {
